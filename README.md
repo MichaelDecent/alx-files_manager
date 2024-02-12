@@ -1,3 +1,5 @@
+### Files manager
+
 This project is a summary of this back-end trimester: authentication, NodeJS, MongoDB, Redis, pagination and background processing.
 
 The objective is to build a simple platform to upload and view files:
@@ -9,7 +11,8 @@ The objective is to build a simple platform to upload and view files:
 * View a file
 * Generate thumbnails for images
 
-## Learning Objectives
+
+### Learning Objectives
 
 At the end of this project, you are expected to be able to explain to anyone, without the help of Google:
 
