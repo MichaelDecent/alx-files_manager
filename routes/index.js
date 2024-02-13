@@ -1,8 +1,14 @@
+#!/usr/bin/node
+
 import AppController from '../controllers/AppController';
+import UserController from '../controllers/UsersController';
 
-const mapRouter = (app) => {
-  app.get('/status', AppController.getStatus);
-  app.get('/stats', AppController.getStats);
-};
+const express = require('express');
 
-module.exports = mapRouter;
+const router = express.Router();
+
+router.get('/status', AppController.getStatus);
+router.get('/stats', AppController.getStats);
+router.post('/users', UserController.postNew);
+
+module.exports = router;
