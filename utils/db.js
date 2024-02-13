@@ -1,10 +1,12 @@
 #!/usr/bin/node
+
 const { MongoClient } = require('mongodb');
 
 class DBClient {
   constructor() {
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
+    
     this.db = process.env.DB_DATABASE || 'files_manager';
 
     const url = `mongodb://${host}:${port}`;
@@ -12,6 +14,7 @@ class DBClient {
     this.client = new MongoClient(url, { useUnifiedTopology: true });
 
     this.connected = false;
+
     this.client.connect()
       .then(() => {
         this.connected = true;
@@ -26,6 +29,7 @@ class DBClient {
   }
 
   async nbUsers() {
+
     try {
       await this.client.connect();
       const usersCount = await this.client.db(this.db).collection('users').countDocuments();
