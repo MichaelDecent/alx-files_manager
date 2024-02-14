@@ -1,6 +1,6 @@
 #!/usr/bin/node
 
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const sha1 = require('sha1');
 
 class DBClient {
@@ -63,15 +63,33 @@ class DBClient {
     }
   }
 
-  async checkExistingEmail(email) {
+  async getUserByEmail(email) {
     try {
       await this.client.connect();
       const user = await this.client.db(this.db).collection('users').findOne({ email });
-      return !!user;
+      return user;
     } catch (error) {
-      console.error('Error searching for email: ', error);
+      console.error('Error getting user by email: ', error);
+      return null;
+    }
+  }
+
+  async getUserById(id) {
+    const _id = ObjectId(id);
+    await this.client.connect();
+    const user = await this.client.db(this.db).collection('users').findOne({ _id });
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
+
+  async checkExistingEmail(email) {
+    const user = await this.getUserByEmail(email);
+    if (user) {
       return true;
     }
+    return false;
   }
 }
 
