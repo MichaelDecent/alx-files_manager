@@ -2,6 +2,7 @@
 
 const { MongoClient, ObjectId } = require('mongodb');
 const sha1 = require('sha1');
+const redisClient = require('./redis');
 
 class DBClient {
   constructor() {
@@ -90,6 +91,43 @@ class DBClient {
       return true;
     }
     return false;
+  }
+
+  async getUserByToken(token) {
+    if (!token) {
+      return null;
+    }
+    const id = await redisClient.get(`auth_${token}`);
+    if (!id) {
+      return null;
+    }
+    const user = await this.getUserById(id);
+    if (!user) {
+      return null;
+    }
+    return user;
+  }
+
+  async getFileById(parentId) {
+    await this.client.connect();
+    const file = await this.client.db(this.db).collection('files').findOne({ parentId });
+    if (!file) {
+      return null;
+    }
+    return file;
+  }
+
+  async createFile(userId, name, type, parentId, isPublic, localPath) {
+    const fileData = {
+      userId, name, type, parentId, isPublic, localPath,
+    };
+    try {
+      await this.client.connect();
+      const file = await this.client.db(this.db).collection('files').insertOne(fileData);
+      return file;
+    } catch (error) {
+      return null;
+    }
   }
 }
 
